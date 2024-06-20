@@ -11,22 +11,62 @@ public class CustomerService {
         // Test Cases
 
         // Test 1
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: when customer service queue is created with a size of 0 or less
+        // Expected Result: the queue should have a maximum size of 10
         Console.WriteLine("Test 1");
 
-        // Defect(s) Found: 
+         CustomerService cs = new CustomerService(0);
+         Console.WriteLine("The new customer Service Queue has a maximum size of 10: "+(cs._maxSize == 10));
+
+        // Defect(s) Found: none
 
         Console.WriteLine("=================");
 
         // Test 2
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: When a new customer is added to the queue
+        // Expected Result: the queue should have 1 customer
         Console.WriteLine("Test 2");
 
-        // Defect(s) Found: 
+        CustomerService cs2 = new CustomerService(1);
+        cs2.AddNewCustomer();
+        Console.WriteLine("The new customer Service Queue has 1 customer: "+(cs2._queue.Count == 1));
+
+        // Defect(s) Found: none 
 
         Console.WriteLine("=================");
+
+        
+
+        // Test 3
+        // Scenario: When a new customer is added to the queue
+        // Expected Result: the new customer should not be added to the queue because the queue is full
+        cs2.AddNewCustomer();
+        Console.WriteLine("The new customer Service Queue has 1 customer: "+(cs2._queue.Count == 1));
+
+        // Defect(s) Found: the "AddNewCustomer" method does not check if the queue is full before adding a new customer,
+        // a corection was made that changed the if statement to check for >= instead of >
+
+        
+        Console.WriteLine("=================");
+        // Test 4
+        // Scenario: When a customer is served from the queue
+        // Expected Result: the queue count should reduce by 1
+        cs2.ServeCustomer();
+        Console.WriteLine("The new customer Service Queue has 0 customer: "+(cs2._queue.Count == 0));
+
+        
+        // Defect(s) Found: The "ServeCustomer" fuction needed to be refactored to save the customer at position 0 to a variable before removing it from the queue
+
+        Console.WriteLine("=================");
+        // Test 5
+        // Scenario: When a customer is served from an empty queue
+        // Expected Result: an error should be displayed
+        cs2.ServeCustomer();
+        Console.WriteLine("The new customer Service Queue has 0 customer: "+(cs2._queue.Count == 0));
+ 
+        // Defect(s) Found: The "ServeCustomer" fuction needed to have a check to see if the queue is empty before trying to serve a customer
+        // a check was added and a message now displays "No Customers in Queue." if the queue is empty
+
 
         // Add more Test Cases As Needed Below
     }
@@ -67,7 +107,7 @@ public class CustomerService {
     /// </summary>
     private void AddNewCustomer() {
         // Verify there is room in the service queue
-        if (_queue.Count > _maxSize) {
+        if (_queue.Count >= _maxSize) {
             Console.WriteLine("Maximum Number of Customers in Queue.");
             return;
         }
@@ -88,8 +128,12 @@ public class CustomerService {
     /// Dequeue the next customer and display the information.
     /// </summary>
     private void ServeCustomer() {
-        _queue.RemoveAt(0);
+        if (_queue.Count == 0) {
+            Console.WriteLine("No Customers in Queue.");
+            return;
+        }
         var customer = _queue[0];
+        _queue.RemoveAt(0);
         Console.WriteLine(customer);
     }
 
