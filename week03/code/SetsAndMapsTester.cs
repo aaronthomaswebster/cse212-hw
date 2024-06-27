@@ -108,9 +108,17 @@ public static class SetsAndMapsTester {
     /// </summary>
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     private static void DisplayPairs(string[] words) {
-        // To display the pair correctly use something like:
-        // Console.WriteLine($"{word} & {pair}");
-        // Each pair of words should displayed on its own line.
+         HashSet<string> hashSet = new HashSet<string>();
+        // loop through the words check if the reverse of the word is in the hashset if it is print the word and the reverse
+        foreach (var word in words) {
+            string reverse = new string(word.Reverse().ToArray());
+            if(hashSet.Contains(reverse)){
+                Console.WriteLine($"{word} & {reverse}");
+            }
+            else{
+                hashSet.Add(word);
+            }
+        }
     }
 
     /// <summary>
@@ -131,7 +139,8 @@ public static class SetsAndMapsTester {
         var degrees = new Dictionary<string, int>();
         foreach (var line in File.ReadLines(filename)) {
             var fields = line.Split(",");
-            // Todo Problem 2 - ADD YOUR CODE HERE
+            if(degrees.ContainsKey(fields[3])) degrees[fields[3]]++;
+            else degrees.Add(fields[3], 1);
         }
 
         return degrees;
@@ -157,8 +166,24 @@ public static class SetsAndMapsTester {
     /// # Problem 3 #
     /// #############
     private static bool IsAnagram(string word1, string word2) {
-        // Todo Problem 3 - ADD YOUR CODE HERE
-        return false;
+        string word1Lower = word1.ToLower().Replace(" ", "");
+        string word2Lower = word2.ToLower().Replace(" ", "");
+        
+        var anagramData = new Dictionary<string, int>();
+        foreach (var letter in word1Lower) {
+            if(anagramData.ContainsKey(letter.ToString())) anagramData[letter.ToString()]++;
+            else anagramData.Add(letter.ToString(), 1);
+        }
+
+        foreach (var letter in word2Lower) {
+            // if the anagramData contains the letter and the value is greater than 0 decrement the value
+            if(anagramData.ContainsKey(letter.ToString()) && anagramData[letter.ToString()]> 0) anagramData[letter.ToString()]--;
+            else return false;
+        }
+        foreach (var value in anagramData.Values) {
+            if(value != 0) return false;
+        }
+        return true;
     }
 
     /// <summary>
